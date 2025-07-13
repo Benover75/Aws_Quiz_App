@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AWS Certified Cloud Practitioner Quiz</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, rgba(40, 30, 60, 0.95), rgba(15, 15, 30, 0.98));
+    margin: 0; padding: 0;
+    min-height: 100vh;
+    color: white;
+    user-select: none;
+  }
+  
+  .navbar {
+    background: rgba(0,0,0,0.9);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding: 15px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  
+  .nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+  }
+  
+  .nav-title {
+    font-size: 24px;
+    font-weight: bold;
+    background: linear-gradient(90deg, #7f5af0, #2cb1ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .nav-menu {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .nav-btn {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+  }
+  
+  .nav-btn:hover, .nav-btn.active {
+    background: linear-gradient(90deg, #7f5af0, #2cb1ff);
+    border-color: transparent;
+  }
+  
+  .main-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 80px);
+    padding: 20px;
+  }
+  .quiz-box {
+    background: rgba(0,0,0,0.85);
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.9);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 40px 50px;
+    max-width: 720px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+  }
+  h1 {
+    font-size: 32px;
+    margin-bottom: 18px;
+    background: linear-gradient(90deg, #7f5af0, #2cb1ff);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    user-select: none;
+  }
+  #progressText {
+    margin-bottom: 12px;
+    font-weight: 600;
+    font-size: 16px;
+    color: #a0a0ff;
+  }
+  #question {
+    font-size: 22px;
+    margin-bottom: 16px;
+    min-height: 90px;
+    line-height: 1.3;
+  }
+  .options button {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    padding: 14px;
+    font-size: 17px;
+    border-radius: 12px;
+    border: 2px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.07);
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    backdrop-filter: blur(6px);
+  }
+  .options button:hover:not(:disabled) {
+    background: rgba(127,90,240,0.35);
+    border-color: #7f5af0;
+  }
+  .options button.correct {
+    background-color: rgba(34, 197, 94, 0.55) !important;
+    border-color: #22c55e !important;
+    color: white;
+  }
+  .options button.incorrect {
+    background-color: rgba(239, 68, 68, 0.55) !important;
+    border-color: #ef4444 !important;
+    color: white;
+  }
+  .button-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+    margin-top: 22px;
+    margin-bottom: 8px;
+  }
+  #nextBtn, #resetBtn, #pauseBtn {
+    margin: 0;
+    padding: 12px 28px;
+    font-size: 17px;
+    background: linear-gradient(90deg, #7f5af0, #2cb1ff);
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    color: white;
+    user-select: none;
+    transition: background 0.3s, transform 0.15s, box-shadow 0.3s;
+    box-shadow: 0 2px 8px rgba(127,90,240,0.08);
+    outline: none;
+  }
+  #nextBtn:hover:not(:disabled), #resetBtn:hover, #pauseBtn:hover {
+    background: linear-gradient(90deg, #2cb1ff, #7f5af0);
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: 0 6px 18px rgba(44,177,255,0.18);
+  }
+  #nextBtn:active, #resetBtn:active, #pauseBtn:active {
+    transform: scale(0.97);
+    box-shadow: 0 1px 4px rgba(44,177,255,0.10);
+  }
+  #nextBtn:disabled {
+    background: rgba(127,90,240,0.3);
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+  #resetBtn {
+    float: right;
+  }
+  .score {
+    margin-top: 28px;
+    font-size: 22px;
+    user-select: text;
+  }
+  .progress-container {
+    background: rgba(255,255,255,0.1);
+    border-radius: 20px;
+    overflow: hidden;
+    height: 14px;
+    margin-top: 20px;
+    width: 100%;
+  }
+  .progress-bar {
+    background: linear-gradient(90deg, #7f5af0, #2cb1ff);
+    width: 0%;
+    height: 100%;
+    transition: width 0.4s ease;
+  }
+  #explanation {
+    margin-top: 18px;
+    font-size: 16px;
+    font-style: italic;
+    color: #a0a0ff;
+    min-height: 40px;
+    user-select: text;
+  }
+  /* Subtle animation for buttons */
+  .options button.correct, .options button.incorrect {
+    animation: fadeHighlight 1s ease forwards;
+  }
+  @keyframes fadeHighlight {
+    0% {opacity: 1;}
+    100% {opacity: 0.85;}
+  }
+
+/* Rocket and background canvas styles */
+#bg-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.7;
+}
+.rocket-progress-container {
+  position: relative;
+  height: 48px;
+  width: 100%;
+  margin-bottom: -24px;
+  z-index: 2;
+}
+#rocketSVG {
+  transition: left 0.5s cubic-bezier(.4,2,.6,1);
+}
+body.high-contrast {
+  background: #000 !important;
+  color: #fff !important;
+}
+body.high-contrast .quiz-box,
+body.high-contrast .main-container,
+body.high-contrast .navbar,
+body.high-contrast .progress-container,
+body.high-contrast .progress-bar,
+body.high-contrast .options button,
+body.high-contrast .score,
+body.high-contrast #explanation,
+body.high-contrast #reviewPanel,
+body.high-contrast #summaryTableContainer {
+  background: #000 !important;
+  color: #fff !important;
+  border-color: #fff !important;
+}
+body.high-contrast .options button {
+  background: #111 !important;
+  color: #fff !important;
+  border: 2px solid #fff !important;
+}
+body.high-contrast .options button.correct {
+  background: #008000 !important;
+  color: #fff !important;
+  border-color: #fff !important;
+}
+body.high-contrast .options button.incorrect {
+  background: #c00 !important;
+  color: #fff !important;
+  border-color: #fff !important;
+}
+body.high-contrast .progress-bar {
+  background: #fff !important;
+}
+body.high-contrast .nav-btn,
+body.high-contrast select,
+body.high-contrast input[type="checkbox"] {
+  background: #111 !important;
+  color: #fff !important;
+  border: 1px solid #fff !important;
+}
+body.high-contrast #timerDisplay {
+  color: #fff !important;
+}
+@media (max-width: 800px) {
+  .quiz-box {
+    padding: 24px 8px;
+    max-width: 98vw;
+    font-size: 16px;
+  }
+  .main-container {
+    padding: 8px;
+  }
+  h1 {
+    font-size: 22px;
+  }
+  .options button {
+    font-size: 16px;
+    padding: 12px;
+    margin: 8px 0;
+  }
+  .button-row {
+    gap: 10px;
+    flex-direction: column;
+  }
+  #reviewPanel, #summaryTableContainer {
+    padding: 18px 4px;
+    max-width: 99vw;
+    font-size: 15px;
+  }
+  .nav-container {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+    padding: 0 6px;
+  }
+  .nav-title {
+    font-size: 18px;
+  }
+  .nav-menu {
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  select, .nav-btn, input[type="checkbox"] {
+    font-size: 15px;
+    padding: 7px 10px;
+  }
+}
+@media (max-width: 500px) {
+  .quiz-box {
+    padding: 10px 2px;
+    font-size: 14px;
+  }
+  h1 {
+    font-size: 16px;
+  }
+  .options button {
+    font-size: 14px;
+    padding: 10px;
+    margin: 6px 0;
+  }
+  .button-row {
+    gap: 6px;
+  }
+  #reviewPanel, #summaryTableContainer {
+    font-size: 13px;
+    padding: 8px 2px;
+  }
+  .nav-title {
+    font-size: 15px;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- Animated floating nodes/graph background -->
+<canvas id="bg-canvas"></canvas>
+
+<!-- Confetti canvas -->
+<canvas id="confetti-canvas" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:100;pointer-events:none;display:none;"></canvas>
+
+<!-- Congratulations message and trophy (hidden by default) -->
+<div id="congrats-container" style="display:none; flex-direction:column; align-items:center; justify-content:center; position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:200; pointer-events:none;">
+  <div id="congrats-message" style="font-size:3rem; font-weight:bold; color:#fff; text-shadow:0 2px 16px #7f5af0,0 0 32px #2cb1ff; opacity:0; transform:scale(0.7); transition:opacity 0.7s, transform 0.7s;">Congratulations!</div>
+  <svg id="trophySVG" width="100" height="100" viewBox="0 0 64 64" style="margin-top:18px; opacity:0; transform:scale(0.7); transition:opacity 0.7s 0.2s, transform 0.7s 0.2s;">
+    <g>
+      <ellipse cx="32" cy="60" rx="18" ry="6" fill="#ffb300" opacity="0.18"/>
+      <rect x="24" y="44" width="16" height="8" rx="4" fill="#ffd700"/>
+      <rect x="20" y="52" width="24" height="6" rx="3" fill="#ffe066"/>
+      <path d="M16 12 Q8 24 24 32 Q16 24 16 12 Z" fill="#ffd700"/>
+      <path d="M48 12 Q56 24 40 32 Q48 24 48 12 Z" fill="#ffd700"/>
+      <ellipse cx="32" cy="24" rx="16" ry="16" fill="#ffd700" stroke="#ffb300" stroke-width="2"/>
+      <ellipse cx="32" cy="24" rx="10" ry="10" fill="#fffde7"/>
+      <circle cx="32" cy="24" r="5" fill="#ffe066"/>
+    </g>
+  </svg>
+</div>
+
+<!-- Firework canvas -->
+<canvas id="firework-canvas" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:150;pointer-events:none;display:none;"></canvas>
+
+<nav class="navbar">
+  <div class="nav-container">
+    <div class="nav-title">AWS Certification Practice</div>
+    <div class="nav-menu">
+      <button class="nav-btn active" onclick="switchCert('foundational')">Foundational</button>
+      <button class="nav-btn" onclick="switchCert('associate')">Associate</button>
+      <button class="nav-btn" onclick="switchCert('professional')">Professional</button>
+      <button class="nav-btn" onclick="switchCert('specialty')">Specialty</button>
+      <select id="questionCountSelect" style="margin-left:24px; padding:6px 12px; border-radius:8px; font-size:15px;">
+        <option value="5">5 Questions</option>
+        <option value="10" selected>10 Questions</option>
+        <option value="20">20 Questions</option>
+        <option value="all">All Questions</option>
+      </select>
+      <select id="difficultySelect" style="margin-left:12px; padding:6px 12px; border-radius:8px; font-size:15px;">
+        <option value="all" selected>All Difficulties</option>
+        <option value="easy">Easy</option>
+        <option value="medium">Medium</option>
+        <option value="hard">Hard</option>
+      </select>
+      <label style="margin-left:12px; font-size:15px; color:#a0a0ff;">
+        <input type="checkbox" id="contrastToggle" style="vertical-align:middle; margin-right:4px;"> High Contrast
+      </label>
+      <label style="margin-left:18px; font-size:15px; color:#a0a0ff;">
+        <input type="checkbox" id="timerToggle" style="vertical-align:middle; margin-right:4px;"> Timer
+      </label>
+    </div>
+  </div>
+</nav>
+
+<div class="main-container">
+  <div class="quiz-box" role="main" aria-label="AWS Certification Practice Quiz">
+  <h1 id="quizTitle">AWS Certified Cloud Practitioner Quiz</h1>
+  <div id="timerDisplay" style="font-size:15px; color:#ffb300; margin-bottom:8px; min-height:22px;"></div>
+  <div id="progressText" aria-live="polite"></div>
+  <div id="question" aria-live="polite" tabindex="0"></div>
+  <div class="options" id="options" role="list" aria-label="Answer options"></div>
+
+  <!-- Rocket progress animation -->
+  <div class="rocket-progress-container">
+    <svg id="rocketSVG" width="48" height="48" viewBox="0 0 48 48" style="position:absolute; left:0; top:-30px; z-index:2; pointer-events:none;">
+      <g>
+        <ellipse cx="24" cy="44" rx="8" ry="4" fill="rgba(44,177,255,0.18)"/>
+        <path d="M24 6 L28 20 L24 18 L20 20 Z" fill="#7f5af0"/>
+        <rect x="21" y="18" width="6" height="16" rx="3" fill="#2cb1ff"/>
+        <circle cx="24" cy="16" r="4" fill="#fff" stroke="#7f5af0" stroke-width="2"/>
+        <rect x="22" y="34" width="4" height="8" rx="2" fill="#ffb300"/>
+      </g>
+    </svg>
+  </div>
+
+  <div class="progress-container" aria-label="Quiz Progress" style="position:relative;">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <div class="button-row">
+    <button id="nextBtn" disabled aria-disabled="true" aria-label="Next question" title="Next Question" tabindex="0">Next</button>
+    <button id="pauseBtn" aria-label="Pause Quiz" title="Pause or Resume the quiz" tabindex="0">Pause</button>
+    <button id="resetBtn" aria-label="Reset Quiz" title="Restart the quiz from beginning" tabindex="0">Reset</button>
+  </div>
+
+  <div id="explanation" aria-live="polite"></div>
+  <div class="score" id="score" aria-live="polite"></div>
+  <div id="reviewBtnContainer" style="margin-top:18px; display:none;">
+    <button id="reviewBtn" style="padding:10px 24px; font-size:16px; border-radius:10px; background:linear-gradient(90deg,#7f5af0,#2cb1ff); color:#fff; border:none; cursor:pointer;">Review Incorrect Answers</button>
+    <button id="reviewAllBtn" style="padding:10px 24px; font-size:16px; border-radius:10px; background:linear-gradient(90deg,#2cb1ff,#7f5af0); color:#fff; border:none; cursor:pointer; margin-left:10px;">Review All</button>
+  </div>
+  <div id="summaryTableContainer" style="display:none; background:rgba(0,0,0,0.92); border-radius:18px; box-shadow:0 4px 32px #2cb1ff33; padding:32px 18px; max-width:900px; margin:32px auto 0; text-align:left; position:relative; z-index:300;">
+    <div style="font-size:22px; font-weight:bold; margin-bottom:12px;">Quiz Summary</div>
+    <div style="overflow-x:auto;">
+      <table id="summaryTable" style="width:100%; border-collapse:collapse;">
+        <thead>
+          <tr style="background:#222; color:#fff;">
+            <th style="padding:8px; border-bottom:1px solid #444;">#</th>
+            <th style="padding:8px; border-bottom:1px solid #444;">Question</th>
+            <th style="padding:8px; border-bottom:1px solid #444;">Your Answer</th>
+            <th style="padding:8px; border-bottom:1px solid #444;">Correct Answer</th>
+            <th style="padding:8px; border-bottom:1px solid #444;">Explanation</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <button id="closeSummaryBtn" style="margin-top:18px; padding:8px 18px; border-radius:8px; background:#ef4444; color:#fff; border:none; font-size:15px;">Close</button>
+    <button id="reviewAllFromSummaryBtn" style="margin-top:18px; margin-left:10px; padding:8px 18px; border-radius:8px; background:#2cb1ff; color:#fff; border:none; font-size:15px;">Review All</button>
+  </div>
+  <div id="reviewPanel" style="display:none; background:rgba(0,0,0,0.92); border-radius:18px; box-shadow:0 4px 32px #2cb1ff33; padding:32px 18px; max-width:600px; margin:32px auto 0; text-align:left; position:relative; z-index:300;">
+    <div id="reviewQuestion" style="font-size:20px; font-weight:bold; margin-bottom:12px;"></div>
+    <div id="reviewOptions" style="margin-bottom:10px;"></div>
+    <div id="reviewExplanation" style="font-size:16px; color:#a0a0ff; margin-bottom:18px;"></div>
+    <div style="display:flex; justify-content:space-between;">
+      <button id="prevReviewBtn" style="padding:8px 18px; border-radius:8px; background:#7f5af0; color:#fff; border:none; font-size:15px;">Previous</button>
+      <button id="closeReviewBtn" style="padding:8px 18px; border-radius:8px; background:#ef4444; color:#fff; border:none; font-size:15px;">Close</button>
+      <button id="nextReviewBtn" style="padding:8px 18px; border-radius:8px; background:#2cb1ff; color:#fff; border:none; font-size:15px;">Next</button>
+    </div>
+  </div>
+  </div>
+</div>
+
+<script>
+  const quizData = [
+    { question: "Which AWS service provides scalable object storage?", options: ["Amazon EC2", "Amazon RDS", "Amazon S3", "Amazon VPC"], answer: 2,
+      explanation: "Amazon S3 is a scalable object storage service designed to store and retrieve any amount of data." },
+    { question: "What does Amazon EC2 stand for?", options: ["Elastic Compute Cloud", "Elastic Container Cloud", "Elastic Customer Cloud", "Elastic Cloud Compute"], answer: 0,
+      explanation: "Amazon EC2 stands for Elastic Compute Cloud and provides resizable compute capacity in the cloud." },
+    { question: "Which AWS service is used for managed relational databases?", options: ["Amazon RDS", "Amazon DynamoDB", "Amazon S3", "AWS Lambda"], answer: 0,
+      explanation: "Amazon RDS provides managed relational database services supporting multiple database engines." },
+    { question: "What pricing model offers the lowest cost for long-term workloads?", options: ["On-Demand", "Reserved Instances", "Spot Instances", "Dedicated Hosts"], answer: 1,
+      explanation: "Reserved Instances provide significant discounts for long-term workloads with commitment." },
+    { question: "Which AWS service is serverless compute?", options: ["AWS Lambda", "Amazon EC2", "Amazon S3", "Amazon VPC"], answer: 0,
+      explanation: "AWS Lambda allows running code without provisioning or managing servers." },
+    { question: "Which AWS service offers content delivery network (CDN)?", options: ["Amazon CloudFront", "AWS Direct Connect", "AWS Transit Gateway", "Amazon VPC"], answer: 0,
+      explanation: "Amazon CloudFront is AWS's global CDN to deliver content with low latency." },
+    { question: "What is the AWS shared responsibility model?", options: ["AWS manages security in the cloud; customer manages security of the cloud", "Customer manages everything", "AWS manages everything", "Customer manages security in the cloud; AWS manages security of the cloud"], answer: 3,
+      explanation: "AWS secures the cloud infrastructure; customers secure data and access in the cloud." },
+    { question: "Which AWS service helps track user activity and API usage?", options: ["Amazon CloudWatch", "AWS CloudTrail", "AWS Config", "Amazon Inspector"], answer: 1,
+      explanation: "AWS CloudTrail records API calls and user activity for auditing and compliance." },
+    { question: "Which AWS service is used for NoSQL databases?", options: ["Amazon RDS", "Amazon DynamoDB", "Amazon Redshift", "Amazon S3"], answer: 1,
+      explanation: "Amazon DynamoDB is a fully managed NoSQL database service." },
+    { question: "Which service helps automate infrastructure as code?", options: ["AWS CloudFormation", "AWS Elastic Beanstalk", "AWS OpsWorks", "AWS Config"], answer: 0,
+      explanation: "AWS CloudFormation lets you model and provision AWS resources via code." },
+    { question: "Which AWS service provides serverless workflows?", options: ["AWS Step Functions", "AWS Lambda", "Amazon S3", "Amazon EC2"], answer: 0,
+      explanation: "AWS Step Functions coordinate multiple AWS services into serverless workflows." },
+    { question: "Which AWS service offers a managed Hadoop framework?", options: ["Amazon EMR", "Amazon Redshift", "AWS Glue", "Amazon Athena"], answer: 0,
+      explanation: "Amazon EMR runs big data frameworks like Hadoop and Spark in a managed environment." },
+    { question: "What is Amazon VPC used for?", options: ["Virtual Private Cloud", "Virtual Public Cloud", "Virtual Private Connection", "Virtual Private Compute"], answer: 0,
+      explanation: "Amazon VPC lets you provision a logically isolated section of the AWS Cloud." },
+    { question: "Which AWS service provides DNS services?", options: ["Amazon Route 53", "Amazon CloudFront", "AWS WAF", "AWS Shield"], answer: 0,
+      explanation: "Amazon Route 53 is a scalable DNS and domain registration service." },
+    { question: "Which AWS service helps protect against DDoS attacks?", options: ["AWS Shield", "AWS WAF", "AWS Firewall Manager", "Amazon Inspector"], answer: 0,
+      explanation: "AWS Shield provides DDoS protection for applications running on AWS." },
+    { question: "Which AWS service manages encryption keys?", options: ["AWS KMS", "AWS IAM", "AWS Secrets Manager", "AWS Config"], answer: 0,
+      explanation: "AWS KMS is a managed service to create and control encryption keys." },
+    { question: "Which AWS service stores secrets securely?", options: ["AWS Secrets Manager", "AWS KMS", "AWS IAM", "AWS Config"], answer: 0,
+      explanation: "AWS Secrets Manager helps you securely store and rotate credentials and secrets." },
+    { question: "What is Amazon CloudWatch used for?", options: ["Monitoring AWS resources", "Storing data", "Managing users", "Deploying applications"], answer: 0,
+      explanation: "Amazon CloudWatch collects monitoring and operational data in real-time." },
+    { question: "Which AWS service provides a managed data warehouse?", options: ["Amazon Redshift", "Amazon DynamoDB", "Amazon S3", "AWS Lambda"], answer: 0,
+      explanation: "Amazon Redshift is a fast, scalable data warehouse service." },
+    { question: "Which AWS service helps analyze streaming data?", options: ["Amazon Kinesis", "Amazon Athena", "AWS Glue", "Amazon EMR"], answer: 0,
+      explanation: "Amazon Kinesis enables real-time processing of streaming data." },
+    { question: "Which AWS service provides serverless SQL querying?", options: ["Amazon Athena", "Amazon Redshift", "AWS Glue", "Amazon EMR"], answer: 0,
+      explanation: "Amazon Athena lets you query data directly from Amazon S3 using SQL." },
+    { question: "Which AWS service is best for static website hosting?", options: ["Amazon S3", "Amazon EC2", "Amazon Lightsail", "AWS Lambda"], answer: 0,
+      explanation: "Amazon S3 can host static websites with high availability and scalability." },
+    { question: "Which AWS service automates software release pipelines?", options: ["AWS CodePipeline", "AWS CodeBuild", "AWS CodeDeploy", "AWS CodeCommit"], answer: 0,
+      explanation: "AWS CodePipeline automates continuous integration and delivery." },
+    { question: "What is Amazon ECS used for?", options: ["Running containers", "Running virtual machines", "Storing files", "Processing big data"], answer: 0,
+      explanation: "Amazon ECS is a container orchestration service for Docker containers." },
+    { question: "What is AWS Lambda pricing based on?", options: ["Number of invocations and compute time", "Number of servers used", "Storage size", "Network bandwidth"], answer: 0,
+      explanation: "AWS Lambda charges based on requests and duration of code execution." },
+    { question: "Which service offers scalable message queues?", options: ["Amazon SQS", "Amazon SNS", "AWS Step Functions", "AWS Lambda"], answer: 0,
+      explanation: "Amazon SQS is a fully managed message queuing service." },
+    { question: "Which AWS service provides push notifications and pub/sub?", options: ["Amazon SNS", "Amazon SQS", "Amazon MQ", "AWS Step Functions"], answer: 0,
+      explanation: "Amazon SNS is used for push notifications and pub/sub messaging." },
+    { question: "Which AWS service helps with identity federation?", options: ["AWS Cognito", "AWS IAM", "AWS KMS", "AWS Directory Service"], answer: 0,
+      explanation: "AWS Cognito supports user sign-up, sign-in, and access control for web and mobile apps." },
+    { question: "Which service offers scalable block storage?", options: ["Amazon EBS", "Amazon S3", "Amazon EFS", "AWS Storage Gateway"], answer: 0,
+      explanation: "Amazon EBS provides persistent block storage for EC2 instances." },
+    { question: "Which AWS service offers a managed Hadoop ecosystem?", options: ["Amazon EMR", "AWS Glue", "Amazon Athena", "Amazon Redshift"], answer: 0,
+      explanation: "Amazon EMR runs big data frameworks like Hadoop and Spark in managed clusters." },
+    { question: "What is AWS Organizations?", options: ["Centralized account management", "User authentication service", "Logging service", "Security service"], answer: 0,
+      explanation: "AWS Organizations helps you centrally manage multiple AWS accounts." },
+    { question: "Which AWS service helps with threat detection?", options: ["AWS GuardDuty", "AWS Inspector", "AWS WAF", "AWS Shield"], answer: 0,
+      explanation: "AWS GuardDuty continuously monitors for malicious activity and unauthorized behavior." },
+    { question: "Which AWS service provides DNS management?", options: ["Amazon Route 53", "AWS CloudFront", "AWS WAF", "AWS Shield"], answer: 0,
+      explanation: "Amazon Route 53 is a scalable DNS service with domain registration capabilities." },
+    { question: "Which service provides serverless event orchestration?", options: ["AWS Step Functions", "AWS Lambda", "Amazon EventBridge", "Amazon SNS"], answer: 0,
+      explanation: "AWS Step Functions orchestrates serverless workflows and state machines." },
+    { question: "Which AWS service helps protect web applications from attacks?", options: ["AWS WAF", "AWS Shield", "AWS Firewall Manager", "AWS Inspector"], answer: 0,
+      explanation: "AWS WAF is a web application firewall that protects against common web exploits." },
+    { question: "What does AWS IAM provide?", options: ["Identity and Access Management", "Infrastructure Monitoring", "Data Storage", "Encryption Key Management"], answer: 0,
+      explanation: "AWS IAM enables secure control of access to AWS resources." },
+    { question: "Which service sends scalable emails?", options: ["Amazon SES", "Amazon SNS", "Amazon SQS", "AWS Lambda"], answer: 0,
+      explanation: "Amazon SES is a scalable email sending service for marketing and transactional emails." },
+    { question: "Which service allows hybrid cloud storage integration?", options: ["AWS Storage Gateway", "Amazon S3", "AWS Backup", "Amazon EBS"], answer: 0,
+      explanation: "AWS Storage Gateway connects on-premises environments to AWS cloud storage." },
+    { question: "Which AWS service is best for real-time alerts?", options: ["Amazon CloudWatch", "AWS CloudTrail", "AWS Config", "AWS Trusted Advisor"], answer: 0,
+      explanation: "Amazon CloudWatch can trigger alarms and alerts based on logs and metrics." },
+    { question: "Which AWS service automates compliance checks?", options: ["AWS Config", "AWS CloudTrail", "AWS IAM", "AWS Shield"], answer: 0,
+      explanation: "AWS Config monitors and records resource configurations to ensure compliance." },
+    { question: "Which AWS service provides centralized security management?", options: ["AWS Security Hub", "AWS Config", "AWS GuardDuty", "AWS Inspector"], answer: 0,
+      explanation: "AWS Security Hub provides a comprehensive view of your security state." },
+    { question: "What is Amazon Lightsail?", options: ["Easy-to-use VPS hosting", "Managed database service", "Object storage", "Content delivery network"], answer: 0,
+      explanation: "Amazon Lightsail is designed to simplify VPS deployment for developers." },
+    { question: "Which AWS service helps analyze logs?", options: ["Amazon Athena", "AWS CloudTrail", "Amazon CloudWatch Logs", "AWS Config"], answer: 2,
+      explanation: "Amazon CloudWatch Logs stores, monitors, and analyzes log data." },
+    { question: "Which AWS service supports infrastructure automation?", options: ["AWS CloudFormation", "AWS CodeBuild", "AWS CodeDeploy", "AWS CodePipeline"], answer: 0,
+      explanation: "AWS CloudFormation automates infrastructure provisioning using templates." },
+    { question: "What does AWS CloudTrail monitor?", options: ["API usage and user activity", "Network traffic", "Storage usage", "Compute utilization"], answer: 0,
+      explanation: "AWS CloudTrail logs API calls for auditing and governance." },
+    { question: "Which AWS service provides event-driven compute?", options: ["AWS Lambda", "Amazon EC2", "Amazon ECS", "Amazon S3"], answer: 0,
+      explanation: "AWS Lambda runs code triggered by events without managing servers." },
+    { question: "What is Amazon Redshift used for?", options: ["Data warehousing", "NoSQL databases", "Object storage", "Serverless compute"], answer: 0,
+      explanation: "Amazon Redshift is a fully managed data warehouse service." },
+    { question: "Which AWS service is best for data lake storage?", options: ["Amazon S3", "Amazon RDS", "Amazon DynamoDB", "Amazon EBS"], answer: 0, explanation: "Amazon S3 is commonly used as the storage layer for data lakes on AWS." },
+    { question: "What is the main benefit of AWS Auto Scaling?", options: ["Automatic resource adjustment", "Manual server management", "Lower network latency", "Faster storage"], answer: 0, explanation: "AWS Auto Scaling automatically adjusts resources to maintain performance and control costs." },
+    { question: "Which AWS service provides a managed Apache Kafka?", options: ["Amazon MSK", "Amazon MQ", "Amazon SQS", "Amazon SNS"], answer: 0, explanation: "Amazon MSK is a fully managed service for Apache Kafka on AWS." },
+    { question: "What is the main use of AWS Cloud9?", options: ["Cloud-based IDE", "Database management", "Serverless compute", "Monitoring"], answer: 0, explanation: "AWS Cloud9 is a cloud-based integrated development environment (IDE)." },
+    { question: "Which AWS service is used for real-time application monitoring?", options: ["Amazon CloudWatch", "AWS Config", "AWS CloudTrail", "Amazon Inspector"], answer: 0, explanation: "Amazon CloudWatch provides real-time monitoring for AWS resources and applications." },
+    { question: "Which AWS service provides a managed firewall?", options: ["AWS Network Firewall", "AWS WAF", "AWS Shield", "Amazon Inspector"], answer: 0, explanation: "AWS Network Firewall is a managed network firewall service for VPCs." },
+    { question: "What is the main function of AWS Glue?", options: ["Data integration and ETL", "Serverless compute", "Object storage", "Monitoring"], answer: 0, explanation: "AWS Glue is a serverless data integration service for ETL (extract, transform, load) jobs." },
+    { question: "Which AWS service is best for managed desktop virtualization?", options: ["Amazon WorkSpaces", "Amazon EC2", "Amazon S3", "AWS Lambda"], answer: 0, explanation: "Amazon WorkSpaces is a managed, secure Desktop-as-a-Service (DaaS) solution." },
+    { question: "Which AWS service provides a managed blockchain platform?", options: ["Amazon Managed Blockchain", "Amazon QLDB", "Amazon RDS", "Amazon DynamoDB"], answer: 0, explanation: "Amazon Managed Blockchain is a fully managed service for creating and managing blockchain networks." },
+    { question: "What is the main use of AWS Elastic Beanstalk?", options: ["Platform as a Service (PaaS)", "Object storage", "Monitoring", "Database management"], answer: 0, explanation: "AWS Elastic Beanstalk is a PaaS for deploying and managing applications." },
+    { question: "Which AWS service is best for video transcoding?", options: ["AWS Elemental MediaConvert", "Amazon S3", "Amazon EC2", "AWS Lambda"], answer: 0, explanation: "AWS Elemental MediaConvert is a file-based video transcoding service." },
+    { question: "Which AWS service provides a managed graph database?", options: ["Amazon Neptune", "Amazon RDS", "Amazon DynamoDB", "Amazon Redshift"], answer: 0, explanation: "Amazon Neptune is a fully managed graph database service." },
+    { question: "What is the main benefit of AWS Trusted Advisor?", options: ["Best practice recommendations", "Database management", "Serverless compute", "Object storage"], answer: 0, explanation: "AWS Trusted Advisor provides real-time guidance to help provision resources following AWS best practices." },
+    { question: "Which AWS service is best for managed email sending?", options: ["Amazon SES", "Amazon SNS", "Amazon SQS", "AWS Lambda"], answer: 0, explanation: "Amazon SES is a scalable and cost-effective email sending service." },
+    { question: "Which AWS service provides a managed time-series database?", options: ["Amazon Timestream", "Amazon RDS", "Amazon DynamoDB", "Amazon Redshift"], answer: 0, explanation: "Amazon Timestream is a fast, scalable, fully managed time-series database service." },
+    { question: "What is the main use of AWS CodeCommit?", options: ["Source control service", "Monitoring", "Object storage", "Serverless compute"], answer: 0, explanation: "AWS CodeCommit is a fully managed source control service that hosts secure Git-based repositories." },
+    { question: "Which AWS service is best for managed Apache Cassandra?", options: ["Amazon Keyspaces", "Amazon DynamoDB", "Amazon RDS", "Amazon Redshift"], answer: 0, explanation: "Amazon Keyspaces is a scalable, highly available, and managed Apache Cassandra-compatible database service." },
+    { question: "Which AWS service provides a managed ledger database?", options: ["Amazon QLDB", "Amazon RDS", "Amazon DynamoDB", "Amazon Redshift"], answer: 0, explanation: "Amazon QLDB is a fully managed ledger database that provides a transparent, immutable, and cryptographically verifiable transaction log." }
+  ];
+
+  // 1. Add difficulty to each question in quizData (default: 'medium')
+  // 2. Add a difficulty select dropdown in the navbar
+  // 3. Filter questions by selected difficulty in prepareQuizData
+  quizData.forEach(q => { if (!q.difficulty) q.difficulty = 'medium'; });
+  // Example: set some as 'easy' or 'hard' (for demo, first 5 easy, last 5 hard)
+  quizData.slice(0,5).forEach(q => q.difficulty = 'easy');
+  quizData.slice(-5).forEach(q => q.difficulty = 'hard');
+
+  const questionEl = document.getElementById("question");
+  const optionsEl = document.getElementById("options");
+  const nextBtn = document.getElementById("nextBtn");
+  const resetBtn = document.getElementById("resetBtn");
+  const pauseBtn = document.getElementById("pauseBtn");
+  const scoreEl = document.getElementById("score");
+  const progressBar = document.getElementById("progressBar");
+  const progressText = document.getElementById("progressText");
+  const explanationEl = document.getElementById("explanation");
+
+  let currentQuestion = 0;
+  let score = 0;
+  let paused = false;
+  let answeredThisQuestion = false;
+  let selectedAnswerIndex = null;
+  let answerHistory = []; // To store user's selected answers for review
+
+  let timerEnabled = false;
+  let timerInterval = null;
+  let quizStartTime = null;
+  let elapsedTime = 0;
+  let perQuestionTimes = [];
+  let questionStartTime = null;
+  const timerToggle = document.getElementById('timerToggle');
+  const timerDisplay = document.getElementById('timerDisplay');
+  timerToggle.addEventListener('change', function() {
+    timerEnabled = this.checked;
+    if (!timerEnabled) {
+      clearInterval(timerInterval);
+      timerDisplay.textContent = '';
+    }
+  });
+
+  function formatTime(ms) {
+    const s = Math.floor(ms / 1000);
+    const min = Math.floor(s / 60);
+    const sec = s % 60;
+    return min + ':' + (sec < 10 ? '0' : '') + sec;
+  }
+
+  function startTimer() {
+    quizStartTime = Date.now();
+    elapsedTime = 0;
+    perQuestionTimes = [];
+    questionStartTime = Date.now();
+    if (timerEnabled) {
+      timerDisplay.textContent = 'Time: 0:00';
+      timerInterval = setInterval(() => {
+        timerDisplay.textContent = 'Time: ' + formatTime(Date.now() - quizStartTime - pausedTimeTotal);
+      }, 500);
+    }
+  }
+
+  function stopTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = null;
+    if (timerEnabled) {
+      timerDisplay.textContent = 'Time: ' + formatTime(Date.now() - quizStartTime - pausedTimeTotal);
+    }
+  }
+
+  let pausedTimeStart = null;
+  let pausedTimeTotal = 0;
+
+  function pauseTimer() {
+    if (timerEnabled && !pausedTimeStart) {
+      pausedTimeStart = Date.now();
+      if (timerInterval) clearInterval(timerInterval);
+    }
+  }
+  function resumeTimer() {
+    if (timerEnabled && pausedTimeStart) {
+      pausedTimeTotal += Date.now() - pausedTimeStart;
+      pausedTimeStart = null;
+      timerInterval = setInterval(() => {
+        timerDisplay.textContent = 'Time: ' + formatTime(Date.now() - quizStartTime - pausedTimeTotal);
+      }, 500);
+    }
+  }
+
+  function showQuestion() {
+    const q = workingQuizData[currentQuestion];
+    progressText.textContent = `Question ${currentQuestion + 1} of ${workingQuizData.length}`;
+    questionEl.textContent = q.question;
+    explanationEl.textContent = "";
+
+    optionsEl.innerHTML = "";
+    q.options.forEach((option, idx) => {
+      const btn = document.createElement("button");
+      btn.textContent = option;
+      btn.setAttribute("role", "listitem");
+      btn.disabled = paused;
+      btn.addEventListener("click", () => selectAnswer(idx));
+      optionsEl.appendChild(btn);
+    });
+
+    nextBtn.disabled = true;
+    nextBtn.setAttribute("aria-disabled", "true");
+    answeredThisQuestion = false;
+    selectedAnswerIndex = null;
+
+    updateProgressBar();
+    if (timerEnabled) questionStartTime = Date.now();
+    setTimeout(() => {
+      const firstBtn = optionsEl.querySelector('button');
+      if (firstBtn) firstBtn.focus();
+    }, 100);
+  }
+
+  function selectAnswer(index) {
+    if (answeredThisQuestion || paused) return;
+
+    selectedAnswerIndex = index;
+    answeredThisQuestion = true;
+    const q = workingQuizData[currentQuestion];
+    const buttons = optionsEl.querySelectorAll("button");
+
+    buttons.forEach((btn, idx) => {
+      btn.disabled = true;
+      btn.classList.remove("correct", "incorrect");
+      if (idx === q.answer) btn.classList.add("correct");
+    });
+
+    if (index === q.answer) {
+      score++;
+    } else {
+      buttons[index].classList.add("incorrect");
+    }
+
+    explanationEl.textContent = `Explanation: ${q.explanation || "No explanation available."}`;
+    nextBtn.disabled = false;
+    nextBtn.setAttribute("aria-disabled", "false");
+
+    // Save answer for review
+    answerHistory[currentQuestion] = index;
+    if (timerEnabled && questionStartTime) {
+      perQuestionTimes[currentQuestion] = Date.now() - questionStartTime;
+    }
+  }
+
+  function updateProgressBar() {
+    const percent = ((currentQuestion) / workingQuizData.length) * 100;
+    progressBar.style.width = percent + "%";
+  }
+
+  function showScore() {
+    progressText.textContent = "Quiz Completed!";
+    questionEl.textContent = "";
+    optionsEl.innerHTML = "";
+    explanationEl.textContent = "";
+    progressBar.style.width = "100%";
+
+    scoreEl.textContent = `Your score: ${score} / ${workingQuizData.length} (${((score / workingQuizData.length) * 100).toFixed(2)}%)`;
+
+    nextBtn.disabled = true;
+    nextBtn.setAttribute("aria-disabled", "true");
+  }
+
+  nextBtn.addEventListener("click", () => {
+    if (paused) return;
+    if (currentQuestion < workingQuizData.length - 1) {
+      currentQuestion++;
+      showQuestion();
+      scoreEl.textContent = "";
+    } else {
+      stopTimer();
+      showScore();
+    }
+  });
+
+  resetBtn.addEventListener("click", () => {
+    if (paused) {
+      alert("Please resume the quiz before resetting.");
+      return;
+    }
+    if(confirm("Are you sure you want to reset the quiz? All progress will be lost.")) {
+      currentQuestion = 0;
+      score = 0;
+      answerHistory = [];
+      stopTimer();
+      pausedTimeTotal = 0;
+      startTimer();
+      prepareQuizData(); // Call prepareQuizData() after reset
+      showQuestion();
+    }
+  });
+
+  pauseBtn.addEventListener("click", () => {
+    if (paused) {
+      paused = false;
+      pauseBtn.textContent = "Resume";
+      nextBtn.disabled = !answeredThisQuestion;
+      nextBtn.setAttribute("aria-disabled", (!answeredThisQuestion).toString());
+      enableOptionButtons(true);
+      explanationEl.textContent = explanationEl.textContent || "";
+      resumeTimer();
+    } else {
+      paused = true;
+      pauseBtn.textContent = "Pause";
+      nextBtn.disabled = true;
+      nextBtn.setAttribute("aria-disabled", "true");
+      enableOptionButtons(false);
+      explanationEl.textContent = "Quiz paused. Click Resume to continue.";
+      pauseTimer();
+    }
+  });
+
+  function enableOptionButtons(enable) {
+    const buttons = optionsEl.querySelectorAll("button");
+    buttons.forEach(btn => btn.disabled = !enable);
+  }
+
+  // --- Shuffle utility functions ---
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  // --- Prepare quiz data for each run ---
+  let originalQuizData = quizData.slice(); // Save original for reset
+  let workingQuizData = [];
+  let selectedQuestionCount = 10;
+  let selectedDifficulty = 'all';
+
+  // Handle question count select
+  const questionCountSelect = document.getElementById('questionCountSelect');
+  questionCountSelect.addEventListener('change', function() {
+    if (this.value === 'all') selectedQuestionCount = originalQuizData.length;
+    else selectedQuestionCount = parseInt(this.value, 10);
+    // Only reset if not in the middle of a quiz
+    if (currentQuestion === 0 || currentQuestion >= workingQuizData.length) {
+      currentQuestion = 0;
+      score = 0;
+      answerHistory = [];
+      prepareQuizData();
+      showQuestion();
+      scoreEl.textContent = "";
+    }
+  });
+
+  // Handle difficulty select
+  const difficultySelect = document.getElementById('difficultySelect');
+  difficultySelect.addEventListener('change', function() {
+    selectedDifficulty = this.value;
+    currentQuestion = 0;
+    score = 0;
+    answerHistory = [];
+    prepareQuizData();
+    showQuestion();
+    scoreEl.textContent = "";
+    clearQuizProgress();
+    autoSave();
+  });
+
+  function prepareQuizData() {
+    // Deep copy and shuffle questions
+    let filtered = originalQuizData.filter(q => selectedDifficulty === 'all' || q.difficulty === selectedDifficulty);
+    let shuffled = shuffleArray(filtered.map(q => {
+      // Shuffle options and adjust answer index
+      let optionObjs = q.options.map((opt, idx) => ({ opt, idx }));
+      optionObjs = shuffleArray(optionObjs);
+      const newOptions = optionObjs.map(o => o.opt);
+      const newAnswer = optionObjs.findIndex(o => o.idx === q.answer);
+      return {
+        ...q,
+        options: newOptions,
+        answer: newAnswer
+      };
+    }));
+    // Select the desired number of questions
+    if (selectedQuestionCount && selectedQuestionCount < shuffled.length) {
+      workingQuizData = shuffled.slice(0, selectedQuestionCount);
+    } else {
+      workingQuizData = shuffled;
+    }
+  }
+
+  // --- Persistence in localStorage ---
+  function saveQuizProgress() {
+    const data = {
+      currentQuestion,
+      score,
+      answerHistory,
+      workingQuizData,
+      selectedQuestionCount,
+      selectedDifficulty, // Add selectedDifficulty to save
+      timerEnabled,
+      quizStartTime,
+      elapsedTime,
+      perQuestionTimes,
+      pausedTimeTotal
+    };
+    localStorage.setItem('awsQuizProgress', JSON.stringify(data));
+  }
+  function clearQuizProgress() {
+    localStorage.removeItem('awsQuizProgress');
+  }
+  function loadQuizProgress() {
+    const data = localStorage.getItem('awsQuizProgress');
+    if (!data) return false;
+    try {
+      const d = JSON.parse(data);
+      currentQuestion = d.currentQuestion || 0;
+      score = d.score || 0;
+      answerHistory = d.answerHistory || [];
+      workingQuizData = d.workingQuizData || [];
+      selectedQuestionCount = d.selectedQuestionCount || 10;
+      selectedDifficulty = d.selectedDifficulty || 'all'; // Load selectedDifficulty
+      timerEnabled = d.timerEnabled || false;
+      quizStartTime = d.quizStartTime || null;
+      elapsedTime = d.elapsedTime || 0;
+      perQuestionTimes = d.perQuestionTimes || [];
+      pausedTimeTotal = d.pausedTimeTotal || 0;
+      // Set UI
+      questionCountSelect.value = selectedQuestionCount === originalQuizData.length ? 'all' : selectedQuestionCount;
+      difficultySelect.value = selectedDifficulty; // Set difficulty select
+      timerToggle.checked = timerEnabled;
+      return true;
+    } catch {
+      return false;
+    }
+  }
+  // Save progress on every answer, next, pause, resume, and reset
+  function autoSave() {
+    saveQuizProgress();
+  }
+
+  // On quiz start, check for saved progress
+  window.addEventListener('DOMContentLoaded', function() {
+    if (localStorage.getItem('awsQuizProgress')) {
+      if (confirm('Resume previous quiz?')) {
+        if (loadQuizProgress() && workingQuizData.length > 0) {
+          showQuestion();
+          if (timerEnabled && quizStartTime) startTimer();
+          return;
+        }
+      }
+      clearQuizProgress();
+    }
+    prepareQuizData();
+    startTimer();
+    showQuestion();
+  });
+
+  // In selectAnswer, after saving answer
+  answerHistory[currentQuestion] = index;
+  autoSave();
+
+  // In nextBtn click, after advancing question or finishing
+  if (currentQuestion < workingQuizData.length - 1) {
+    currentQuestion++;
+    showQuestion();
+    scoreEl.textContent = "";
+    autoSave();
+  } else {
+    stopTimer();
+    showScore();
+    clearQuizProgress();
+  }
+
+  // In resetBtn click, after resetting state
+  stopTimer();
+  pausedTimeTotal = 0;
+  startTimer();
+  prepareQuizData();
+  showQuestion();
+  clearQuizProgress();
+  autoSave();
+
+  // In pauseBtn click, after pausing/resuming
+  pauseTimer();
+  autoSave();
+  resumeTimer();
+  autoSave();
+
+</script>
+
+<!-- Animated floating nodes/graph background -->
+<script>
+(function() {
+  const canvas = document.getElementById('bg-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let nodes = [];
+  let width = window.innerWidth;
+  let height = window.innerHeight;
+  const NODE_COUNT = 32;
+  const LINK_DIST = 160;
+
+  function resize() {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  function randomNode() {
+    return {
+      x: Math.random() * width,
+      y: Math.random() * height,
+      vx: (Math.random() - 0.5) * 0.4,
+      vy: (Math.random() - 0.5) * 0.4,
+      r: 2 + Math.random() * 2.5
+    };
+  }
+  nodes = Array.from({length: NODE_COUNT}, randomNode);
+
+  function animate() {
+    ctx.clearRect(0, 0, width, height);
+    // Draw links
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const a = nodes[i], b = nodes[j];
+        const dist = Math.hypot(a.x - b.x, a.y - b.y);
+        if (dist < LINK_DIST) {
+          ctx.strokeStyle = `rgba(127,90,240,${1 - dist / LINK_DIST})`;
+          ctx.lineWidth = 1.1;
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.stroke();
+        }
+      }
+    }
+    // Draw nodes
+    for (const node of nodes) {
+      ctx.beginPath();
+      ctx.arc(node.x, node.y, node.r, 0, 2 * Math.PI);
+      ctx.fillStyle = 'rgba(44,177,255,0.7)';
+      ctx.shadowColor = '#7f5af0';
+      ctx.shadowBlur = 8;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+    // Move nodes
+    for (const node of nodes) {
+      node.x += node.vx;
+      node.y += node.vy;
+      if (node.x < 0 || node.x > width) node.vx *= -1;
+      if (node.y < 0 || node.y > height) node.vy *= -1;
+    }
+    requestAnimationFrame(animate);
+  }
+  animate();
+})();
+</script>
+
+<!-- --- Rocket progress animation --- -->
+<script>
+function updateRocketPosition() {
+  const rocket = document.getElementById('rocketSVG');
+  const progressBar = document.getElementById('progressBar');
+  if (!rocket || !progressBar) return;
+  const container = progressBar.parentElement;
+  const percent = ((currentQuestion) / workingQuizData.length);
+  const barWidth = container.offsetWidth;
+  const rocketWidth = rocket.offsetWidth;
+  // Clamp rocket within bar
+  const left = Math.max(0, Math.min(barWidth - rocketWidth, percent * (barWidth - rocketWidth)));
+  rocket.style.left = left + 'px';
+}
+</script>
+
+<!-- --- Confetti animation --- -->
+<script>
+function launchConfetti() {
+  const canvas = document.getElementById('confetti-canvas');
+  if (!canvas) return;
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  canvas.style.display = 'block';
+  const ctx = canvas.getContext('2d');
+  const confettiCount = 120;
+  const confetti = [];
+  const colors = ['#7f5af0', '#2cb1ff', '#ffb300', '#22c55e', '#ef4444', '#fff'];
+  for (let i = 0; i < confettiCount; i++) {
+    confetti.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * -canvas.height,
+      r: 6 + Math.random() * 8,
+      d: 2 + Math.random() * 2,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      tilt: Math.random() * 10 - 5,
+      tiltAngle: 0,
+      tiltAngleInc: (Math.random() * 0.07) + 0.05
+    });
+  }
+  let frame = 0;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (let i = 0; i < confetti.length; i++) {
+      const c = confetti[i];
+      ctx.beginPath();
+      ctx.lineWidth = c.r;
+      ctx.strokeStyle = c.color;
+      ctx.moveTo(c.x + c.tilt + c.r / 3, c.y);
+      ctx.lineTo(c.x + c.tilt, c.y + c.tilt + c.r);
+      ctx.stroke();
+    }
+    update();
+    frame++;
+    if (frame < 180) {
+      requestAnimationFrame(draw);
+    } else {
+      fadeOut();
+    }
+  }
+  function update() {
+    for (let i = 0; i < confetti.length; i++) {
+      const c = confetti[i];
+      c.y += c.d;
+      c.tiltAngle += c.tiltAngleInc;
+      c.tilt = Math.sin(c.tiltAngle) * 12;
+      if (c.y > canvas.height) {
+        c.x = Math.random() * canvas.width;
+        c.y = -10;
+      }
+    }
+  }
+  function fadeOut() {
+    let opacity = 1;
+    function fade() {
+      opacity -= 0.04;
+      canvas.style.opacity = opacity;
+      if (opacity > 0) {
+        requestAnimationFrame(fade);
+      } else {
+        canvas.style.display = 'none';
+        canvas.style.opacity = 1;
+      }
+    }
+    fade();
+  }
+  draw();
+}
+</script>
+
+<!-- --- Firework animation --- -->
+<script>
+function launchFireworks() {
+  const canvas = document.getElementById('firework-canvas');
+  if (!canvas) return;
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  canvas.style.display = 'block';
+  const ctx = canvas.getContext('2d');
+  const colors = ['#7f5af0', '#2cb1ff', '#ffb300', '#22c55e', '#ef4444', '#fff'];
+  let fireworks = [];
+  let frame = 0;
+  function Firework() {
+    const x = Math.random() * canvas.width * 0.8 + canvas.width * 0.1;
+    const y = Math.random() * canvas.height * 0.4 + canvas.height * 0.1;
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const count = 24 + Math.floor(Math.random() * 12);
+    const particles = [];
+    for (let i = 0; i < count; i++) {
+      const angle = (2 * Math.PI * i) / count;
+      const speed = 2 + Math.random() * 2.5;
+      particles.push({
+        x, y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        alpha: 1,
+        color
+      });
+    }
+    return {particles};
+  }
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (const fw of fireworks) {
+      for (const p of fw.particles) {
+        ctx.globalAlpha = p.alpha;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 3, 0, 2 * Math.PI);
+        ctx.fillStyle = p.color;
+        ctx.shadowColor = p.color;
+        ctx.shadowBlur = 12;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+    }
+    ctx.globalAlpha = 1;
+    update();
+    frame++;
+    if (frame < 90) {
+      requestAnimationFrame(draw);
+    } else {
+      fadeOut();
+    }
+  }
+  function update() {
+    for (const fw of fireworks) {
+      for (const p of fw.particles) {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vx *= 0.97;
+        p.vy *= 0.97;
+        p.alpha -= 0.012;
+      }
+    }
+  }
+  function fadeOut() {
+    let opacity = 1;
+    function fade() {
+      opacity -= 0.05;
+      canvas.style.opacity = opacity;
+      if (opacity > 0) {
+        requestAnimationFrame(fade);
+      } else {
+        canvas.style.display = 'none';
+        canvas.style.opacity = 1;
+      }
+    }
+    fade();
+  }
+  // Launch 3 fireworks at random positions
+  fireworks = [Firework(), Firework(), Firework()];
+  draw();
+}
+</script>
+
+<!-- --- Congratulations message and trophy --- -->
+<script>
+function showCongrats() {
+  const container = document.getElementById('congrats-container');
+  const msg = document.getElementById('congrats-message');
+  const trophy = document.getElementById('trophySVG');
+  if (!container || !msg || !trophy) return;
+  container.style.display = 'flex';
+  setTimeout(() => {
+    msg.style.opacity = 1;
+    msg.style.transform = 'scale(1)';
+    trophy.style.opacity = 1;
+    trophy.style.transform = 'scale(1)';
+  }, 100);
+  setTimeout(() => {
+    container.style.display = 'none';
+    msg.style.opacity = 0;
+    msg.style.transform = 'scale(0.7)';
+    trophy.style.opacity = 0;
+    trophy.style.transform = 'scale(0.7)';
+  }, 3200);
+}
+</script>
+
+<!-- --- Review Incorrect Answers Feature --- -->
+<script>
+let reviewIncorrect = [];
+let reviewIndex = 0;
+const reviewBtnContainer = document.getElementById('reviewBtnContainer');
+const reviewBtn = document.getElementById('reviewBtn');
+const reviewPanel = document.getElementById('reviewPanel');
+const reviewQuestion = document.getElementById('reviewQuestion');
+const reviewOptions = document.getElementById('reviewOptions');
+const reviewExplanation = document.getElementById('reviewExplanation');
+const prevReviewBtn = document.getElementById('prevReviewBtn');
+const nextReviewBtn = document.getElementById('nextReviewBtn');
+const closeReviewBtn = document.getElementById('closeReviewBtn');
+const reviewAllBtn = document.getElementById('reviewAllBtn');
+const summaryTableContainer = document.getElementById('summaryTableContainer');
+const summaryTable = document.getElementById('summaryTable');
+const closeSummaryBtn = document.getElementById('closeSummaryBtn');
+const reviewAllFromSummaryBtn = document.getElementById('reviewAllFromSummaryBtn');
+
+const origShowScoreAll = showScore;
+showScore = function() {
+  origShowScoreAll.apply(this, arguments);
+  updateRocketPosition();
+  launchConfetti();
+  launchFireworks();
+  showCongrats();
+  // Gather incorrect answers
+  reviewIncorrect = [];
+  for (let i = 0; i < workingQuizData.length; i++) {
+    if (answerHistory[i] !== undefined && answerHistory[i] !== workingQuizData[i].answer) {
+      reviewIncorrect.push({
+        idx: i,
+        question: workingQuizData[i].question,
+        options: workingQuizData[i].options,
+        correct: workingQuizData[i].answer,
+        user: answerHistory[i],
+        explanation: workingQuizData[i].explanation
+      });
+    }
+  }
+  if (reviewIncorrect.length > 0) {
+    reviewBtnContainer.style.display = 'block';
+  } else {
+    reviewBtnContainer.style.display = 'none';
+  }
+  reviewPanel.style.display = 'none';
+};
+
+reviewBtn.addEventListener('click', function() {
+  if (reviewIncorrect.length === 0) return;
+  reviewIndex = 0;
+  showReviewPanel();
+});
+closeReviewBtn.addEventListener('click', function() {
+  reviewPanel.style.display = 'none';
+});
+prevReviewBtn.addEventListener('click', function() {
+  if (reviewIndex > 0) {
+    reviewIndex--;
+    showReviewPanel();
+  }
+});
+nextReviewBtn.addEventListener('click', function() {
+  if (reviewIndex < reviewIncorrect.length - 1) {
+    reviewIndex++;
+    showReviewPanel();
+  }
+});
+
+function showReviewPanel() {
+  const item = reviewIncorrect[reviewIndex];
+  reviewPanel.style.display = 'block';
+  reviewQuestion.textContent = `Q${item.idx + 1}: ${item.question}`;
+  reviewOptions.innerHTML = item.options.map(function(opt, i) {
+    let style = 'padding:6px 12px; border-radius:6px; margin-bottom:4px; display:inline-block;';
+    if (i === item.correct) style += ' background:#22c55e; color:#fff;';
+    else if (i === item.user) style += ' background:#ef4444; color:#fff;';
+    else style += ' background:#222; color:#fff;';
+    return '<div style="' + style + '">' + opt + '</div>';
+  }).join('');
+  reviewExplanation.textContent = `Explanation: ${item.explanation || 'No explanation available.'}`;
+  prevReviewBtn.disabled = reviewIndex === 0;
+  nextReviewBtn.disabled = reviewIndex === reviewIncorrect.length - 1;
+}
+
+// Show summary table at end of quiz
+function showSummaryTable() {
+  summaryTableContainer.style.display = 'block';
+  // Fill table
+  const tbody = summaryTable.querySelector('tbody');
+  tbody.innerHTML = '';
+  for (let i = 0; i < workingQuizData.length; i++) {
+    const q = workingQuizData[i];
+    const userIdx = answerHistory[i];
+    const correctIdx = q.answer;
+    const tr = document.createElement('tr');
+    tr.style.background = (userIdx === correctIdx) ? 'rgba(34,197,94,0.18)' : (userIdx === undefined ? '#222' : 'rgba(239,68,68,0.18)');
+    tr.innerHTML = `
+      <td style='padding:6px 8px; font-weight:bold;'>${i+1}</td>
+      <td style='padding:6px 8px;'>${q.question}</td>
+      <td style='padding:6px 8px;'>${userIdx !== undefined ? q.options[userIdx] : '<em>Not answered</em>'}</td>
+      <td style='padding:6px 8px;'>${q.options[correctIdx]}</td>
+      <td style='padding:6px 8px; color:#a0a0ff;'>${q.explanation || ''}</td>
+    `;
+    tbody.appendChild(tr);
+  }
+}
+closeSummaryBtn.addEventListener('click', function() {
+  summaryTableContainer.style.display = 'none';
+});
+reviewAllFromSummaryBtn.addEventListener('click', function() {
+  summaryTableContainer.style.display = 'none';
+  startReviewAll();
+});
+
+// Review All logic
+let reviewAll = [];
+let reviewAllIndex = 0;
+reviewAllBtn.addEventListener('click', startReviewAll);
+function startReviewAll() {
+  reviewAll = [];
+  for (let i = 0; i < workingQuizData.length; i++) {
+    reviewAll.push({
+      idx: i,
+      question: workingQuizData[i].question,
+      options: workingQuizData[i].options,
+      correct: workingQuizData[i].answer,
+      user: answerHistory[i],
+      explanation: workingQuizData[i].explanation
+    });
+  }
+  reviewAllIndex = 0;
+  showReviewAllPanel();
+}
+function showReviewAllPanel() {
+  reviewPanel.style.display = 'block';
+  const item = reviewAll[reviewAllIndex];
+  reviewQuestion.textContent = `Q${item.idx + 1}: ${item.question}`;
+  reviewOptions.innerHTML = item.options.map(function(opt, i) {
+    let style = 'padding:6px 12px; border-radius:6px; margin-bottom:4px; display:inline-block;';
+    if (i === item.correct) style += ' background:#22c55e; color:#fff;';
+    else if (i === item.user) style += ' background:#ef4444; color:#fff;';
+    else style += ' background:#222; color:#fff;';
+    return '<div style="' + style + '">' + opt + '</div>';
+  }).join('');
+  reviewExplanation.textContent = `Explanation: ${item.explanation || 'No explanation available.'}`;
+  prevReviewBtn.disabled = reviewAllIndex === 0;
+  nextReviewBtn.disabled = reviewAllIndex === reviewAll.length - 1;
+}
+nextReviewBtn.addEventListener('click', function() {
+  if (reviewAllIndex < reviewAll.length - 1) {
+    reviewAllIndex++;
+    showReviewAllPanel();
+  }
+});
+prevReviewBtn.addEventListener('click', function() {
+  if (reviewAllIndex > 0) {
+    reviewAllIndex--;
+    showReviewAllPanel();
+  }
+});
+// End of Review Incorrect Answers Feature
+</script>
+
+<script>
+window.addEventListener('resize', updateRocketPosition);
+// Initial call
+setTimeout(updateRocketPosition, 200);
+</script>
+
+</body>
+</html>
